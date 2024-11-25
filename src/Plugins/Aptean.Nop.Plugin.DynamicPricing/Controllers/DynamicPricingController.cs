@@ -68,6 +68,7 @@ namespace Nop.Plugin.Aptean.DynamicPricing.Controllers
             // Load and update settings
             _dynamicPricingSettings.ApiUrl = model.ApiUrl;
             _dynamicPricingSettings.ClientOid = model.ClientOid;
+            _dynamicPricingSettings.EnableDynamicPricing = model.EnableDynamicPricing;
 
             await _settingService.SaveSettingAsync(_dynamicPricingSettings);
 

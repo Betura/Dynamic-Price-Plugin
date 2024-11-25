@@ -14,4 +14,5 @@ public class ConfigurationModel
 {
     public string ApiUrl { get; set; }
     public string ClientOid { get; set; }
+    public bool EnableDynamicPricing { get; set; } = true;
 }
