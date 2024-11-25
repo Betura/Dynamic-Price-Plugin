@@ -17,4 +17,9 @@ public class DynamicPricingSettings : ISettings
     /// Gets or sets the client OID for authentication.
     /// </summary>
     public string ClientOid { get; set; }
+
+    /// <summary>
+    /// Gets or sets whether dynamic pricing is enabled.
+    /// </summary>
+    public bool EnableDynamicPricing { get; set; } = true; // Default to enabled
 }

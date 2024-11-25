@@ -38,7 +38,8 @@ public class DynamicPricingPlugin : BasePlugin, IMiscPlugin
         await _settingService.SaveSettingAsync(new DynamicPricingSettings
         {
             ApiUrl = "https://api.example.com/erp/api/v1",
-            ClientOid = "default-client-id"
+            ClientOid = "default-client-id",
+            EnableDynamicPricing = true // Enable dynamic pricing by default
         });
 
         await base.InstallAsync();

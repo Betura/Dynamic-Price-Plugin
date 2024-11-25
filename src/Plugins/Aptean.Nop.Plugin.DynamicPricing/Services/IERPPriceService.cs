@@ -17,4 +17,5 @@ public interface IERPPriceService
 {
     Task<Dictionary<int, decimal>> GetProductPricesAsync(int customerId, List<int> productIds);
     Task<Dictionary<int, decimal>> GetCartPricesAsync(int customerId, Dictionary<int, int> cartItems);
+    bool IsDynamicPricingEnabled();
 }

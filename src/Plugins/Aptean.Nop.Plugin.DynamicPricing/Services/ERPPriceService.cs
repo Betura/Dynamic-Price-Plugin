@@ -35,6 +35,13 @@ public class ERPPriceService : IERPPriceService
 
     public async Task<Dictionary<int, decimal>> GetProductPricesAsync(int customerId, List<int> productIds)
     {
+        if (string.IsNullOrWhiteSpace(_settings.ApiUrl))
+        {
+            var random = new Random();
+            var prices = productIds.ToDictionary(productId => productId, _ => (decimal)(random.Next(1000, 10000) / 100.0));
+            return prices;
+        }
+
         var url = $"{_settings.ApiUrl}/products/{customerId}/prices?productIds={string.Join(",", productIds)}";
         try
         {
@@ -63,6 +70,8 @@ public class ERPPriceService : IERPPriceService
             return new Dictionary<int, decimal>();
         }
     }
+
+
 
     public async Task<Dictionary<int, decimal>> GetCartPricesAsync(int customerId, Dictionary<int, int> cartItems)
     {
@@ -94,5 +103,10 @@ public class ERPPriceService : IERPPriceService
             _logger.Error($"Error calling ERP API (Cart Prices): {url}", ex);
             return new Dictionary<int, decimal>();
         }
+    }
+
+    public bool IsDynamicPricingEnabled()
+    {
+        return _settings.EnableDynamicPricing;
     }
 }

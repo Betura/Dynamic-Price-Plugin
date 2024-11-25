@@ -27,21 +27,10 @@ public class NopStartup : INopStartup
         services.AddHttpClient<ERPPriceService>();
 
         // Override default ProductModelFactory
-        //services.AddScoped<IProductModelFactory, CustomProductModelFactory>();
         services.AddSingleton<IProductModelFactory, CustomProductModelFactory>();
 
         // Override default PriceCalculationService
         services.AddScoped<IPriceCalculationService, CustomPriceCalculationService>();
-
-        // Override the default shopping cart service
-        services.AddScoped<IShoppingCartService, CustomShoppingCartService>();
-
-        // Register the event consumer
-        services.AddScoped<IConsumer<EntityInsertedEvent<ShoppingCartItem>>, ShoppingCartEventConsumer>();
-        services.AddScoped<IConsumer<EntityUpdatedEvent<ShoppingCartItem>>, ShoppingCartEventConsumer>();
-
-        services.AddSingleton<IProductModelFactory, CustomProductModelFactory>();
-
     }
 
     public void Configure(IApplicationBuilder application)
