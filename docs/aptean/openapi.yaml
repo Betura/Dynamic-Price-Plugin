@@ -1,0 +1,477 @@
+
+openapi: 3.0.3
+info:
+  title: Aptean Customer Portal ERP Integration API
+  description: |-
+    This OpenAPI 3.0.3 specification outlines the APIs designed to facilitate seamless integration between our ERP products and our Customer Portal. The APIs provide robust endpoints for managing and synchronizing data related to inventory, orders, customers, and product information, ensuring that both systems operate in harmony.
+
+    With a focus on efficiency and reliability, this specification defines the structure of requests and responses, authentication methods, and error handling protocols. The integration aims to streamline business processes, enhance data accuracy, and improve the overall user experience across our platforms.
+
+    Key features include:
+    <ul>
+    <li><b>Real-time Data Synchronization:</b> Automatically update inventory and order statuses between the ERP and eCommerce Portal.</li>
+    <li><b>Comprehensive Resource Management:</b> Manage products, categories, customers, and orders through a unified API.</li>
+    <li><b>Detailed Error Handling:</b> Provide meaningful error messages for improved troubleshooting.</li>
+    </ul>
+    These APIs will empower developers to create applications that leverage the strengths of both the ERP and eCommerce systems, driving efficiency and growth for our business.
+    
+    In these APIs, <b>Customer</b> refers to Aptean's customer, and <b>End Customer</b> refers to Aptean's customer's customer.
+
+  version: 0.5.0
+
+servers:
+  - url: https://__host__/erp/api/v1
+tags:
+  - name: products
+    description: APIs to get product related information from ERP
+  - name: end customers
+    description: APIs to get end customer related information from ERP
+paths:
+  /products/tags:
+    get:
+      tags:
+        - products
+      summary: get product tags 
+      description: return all product tags
+      operationId: getProductTags
+      parameters:
+        - $ref: '#/components/parameters/header_clientoid'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Service Unavailable
+  /products/manufacturers:
+    get:
+      tags:
+        - products
+      summary: get product manufacturers 
+      description: return all product manufacturers
+      operationId: getProductManufacturers
+      parameters:
+        - $ref: '#/components/parameters/header_clientoid'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Manufacturer'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Service Unavailable
+  /products/categories:
+    get:
+      tags:
+        - products
+      summary: get product categories 
+      description: all product categories
+      operationId: getProductCategories
+      parameters:
+        - $ref: '#/components/parameters/header_clientoid'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Service Unavailable
+  /products/catalog:
+    get:
+      tags:
+        - products
+      summary: get global product catalog 
+      description: global product catalog from an ERP customer. An end customer may only be able to see partial of the global catalog
+      operationId: getProductCatalog
+      parameters:
+        - $ref: '#/components/parameters/header_clientoid'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Service Unavailable
+  /products/{end-customer-id}/catalog:
+    get:
+      tags:
+        - products
+      summary: get product catalog for a specific end customer 
+      description: Product catalog for an end customer.
+      operationId: getEndCustomerProductCatalog
+      parameters:
+        - name: end-customer-id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "12345"
+        - $ref: '#/components/parameters/header_clientoid'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Service Unavailable
+  /products/{end-customer-id}/prices:
+    get:
+      tags:
+        - products
+      summary: get real-time dynamic product price at runtime 
+      description: For many ERPs, a product's price changes based on date, availability, promotion and contract with end customers. This API will be used to fetch the prices for up to 50 specified products from ERP system. return default product prices if end-customer-id is 'default'
+      operationId: getProductPrices
+      parameters:
+        - name: end-customer-id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "12345"
+        - name: productIds
+          in: query
+          required: true
+          description: A comma-separated list of product IDs (up to 50)
+          schema:
+            type: string
+            maxLength: 2048
+        - $ref: '#/components/parameters/header_clientoid'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductPrice'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Service Unavailable
+  /end-customers:
+    get:
+      tags:
+        - end customers
+      summary: get all end customers for an Aptean  ERP customer
+      operationId: getEndCustomers
+      parameters:
+        - $ref: '#/components/parameters/header_clientoid'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EndCustomer'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Service Unavailable
+  /end-customers/{end-customer-id}/contacts:
+    get:
+      tags:
+        - end customers
+      summary: get end customer's contacts 
+      description: End customer's admin user can use the contacts to add more users to the customer portal
+      operationId: getEndCustomerContacts
+      parameters:
+        - name: end-customer-id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "12345"
+        - $ref: '#/components/parameters/header_clientoid'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EndCustomerContact'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Service Unavailable
+components:
+  responses:
+    200:
+      description: OK
+    202:
+      description: Accepted
+    400:
+      description: Bad Request
+    405:
+      description: Method Not Allowed
+    500:
+      description: Internal Server Error
+    503: 
+      description: Service Unavailable
+  parameters:
+    header_useroid:
+      name: x-iam-uoid
+      in: header
+      description: User OID of the requestor as provisioned by Apteam IAM
+      required: true
+      schema:
+        type: string
+    header_clientoid:
+      name: x-iam-coid
+      in: header
+      description: Client OID of the requestor as provisioned by Aptean IAM
+      required: true
+      schema:
+        type: string
+    header_productoid:
+      name: x-iam-poid
+      in: header
+      description: Product OID provisioned by Aptean IAM.
+      required: false
+      schema:
+        type: string
+    header_correlationid:
+      name: x-correlationid
+      in: header
+      description: correlation id for the request
+      required: false
+      schema:
+        type: string
+  schemas:
+    Manufacturer: 
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: Unique identifier for the manufacturer
+        name:
+          type: string
+          example: "IBM"
+          description: Name of the manufaturer
+        description:
+          type: string
+          description: Description of the manufacturer
+      required:
+        - id
+        - name
+    Category: 
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: Unique identifier for the category
+        name:
+          type: string
+          example: "Electronics"
+          description: Name of the category
+        description:
+          type: string
+          example: "Category for all electronic items"
+          description: Description of the category
+        parentCategory:
+          type: integer
+          description: "ID of the parent category if applicable"
+      required:
+        - id
+        - name
+    Product:
+      type: object
+      properties:
+        productId:
+          type: integer
+          format: int32
+          description: Product Identifier
+        name:
+          type: string
+          description: Product Name
+          example: Orange
+        description:
+          type: string
+          description: Product Description
+          example: sweet, rich in vitamin C and produced in California
+        categories:
+          type: array
+          items:
+            type: integer
+            description: Id of a product category
+          description: Array of category Ids that this product belongs to
+        vendor:
+          type: integer
+          description: vendor Id
+        price:
+          type: number
+        stockQuantity:
+          type: integer
+        warehouse:
+          type: string
+        requiredProducts:
+          type: array
+          items:
+            type: integer
+            description: Id of required products
+          description: Array of product Ids that are required for this product
+        relatedProducts:
+          type: array
+          items:
+            type: integer
+            description: Id of related products
+          description: Array of product Ids that are related to this product
+        crossSellProducts:
+          type: array
+          items:
+            type: integer
+            description: Id of cross-sell products
+          description: Array of product Ids that generally go with the selected product
+    ProductPrice:
+      type: object
+      properties:
+        productId:
+          type: integer
+        price:
+          type: number
+    EndCustomer:
+      type: object
+      description: Aptean ERP Customer's customers, normally it's a company
+      properties:
+        customerId:
+          type: integer
+          format: int32
+        name:
+          type: string
+        description:
+          type: string
+        shippingAddresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
+        billingAddresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
+        mainContact:
+          $ref: '#/components/schemas/EndCustomerContact'
+    EndCustomerContact:
+      type: object
+      properties:
+        contactId:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+    Address:
+      type: object
+      properties:
+        street1:
+          type: string
+          example: "123 Main St"
+        street2:
+          type: string
+          example: "Apt 4B"
+        city:
+          type: string
+          example: "Springfield"
+        state:
+          type: string
+          example: "IL"
+        country:
+          type: string
+          example: "United States"
+        postalCode:
+          type: string
+          example: "62704"
+      required:
+        - street1
+        - city
+        - state
+        - postalCode
+  headers:
+    ETag:
+      description: Defines the entity tag for use with the If-Match and If-None-Match request headers
+      schema:
+        type: string
+    Last-Modified:
+      description: Specifies the date and time the representational state of the resource was last modified
+      required: false
+      schema:
+        type: string
+    Content-Language:
+      description: 'Specifies the languages for which the entity-body is intended '
+      required: false
+      schema:
+        type: string
+
+ 

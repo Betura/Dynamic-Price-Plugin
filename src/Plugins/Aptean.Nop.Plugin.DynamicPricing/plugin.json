@@ -1,0 +1,11 @@
+{
+  "Group": "Aptean",
+  "FriendlyName": "DynamicPricing",
+  "SystemName": "Aptean.DynamicPricing",
+  "Version": 1.0,
+  "SupportedVersions": [ "4.70" ],
+  "Author": "MengShu Li",
+  "DisplayOrder": 1,
+  "FileName": "Nop.Plugin.Aptean.DynamicPricing.dll",
+  "Description": "This plugin integrates with an ERP system to dynamically retrieve product prices based on customer and product information."
+}

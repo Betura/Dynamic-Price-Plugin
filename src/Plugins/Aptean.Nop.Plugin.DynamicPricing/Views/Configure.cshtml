@@ -1,0 +1,30 @@
+@model Nop.Plugin.Aptean.DynamicPricing.Models.ConfigurationModel
+
+@inject Nop.Core.IWebHelper webHelper
+
+@{
+    Layout = "_ConfigurePlugin";
+}
+
+@await Component.InvokeAsync(typeof(StoreScopeConfigurationViewComponent))
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Dynamic Pricing Configuration</h3>
+    </div>
+    <div class="card-body">
+        <form asp-action="Configure" method="post">
+            <div class="form-group">
+                <label asp-for="ApiUrl">API URL:</label>
+                <input asp-for="ApiUrl" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="ClientOid">Client OID:</label>
+                <input asp-for="ClientOid" class="form-control" />
+            </div>
+            <div>
+                <button type="submit" name="save" class="btn btn-primary">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
